@@ -156,12 +156,12 @@ def test_simple_ethan(image_path,model_name):
 
     #download_model_if_doesnt_exist(model_name)
     model_path = os.path.join("models", model_name)
-    #print("-> Loading model from ", model_path)
+    print("-> Loading model from ", model_path)
     encoder_path = os.path.join(model_path, "encoder.pth")
     depth_decoder_path = os.path.join(model_path, "depth.pth")
 
     # LOADING PRETRAINED MODEL
-    #print("   Loading pretrained encoder")
+    print("   Loading pretrained encoder")
     encoder = networks.ResnetEncoder(18, False)
     loaded_dict_enc = torch.load(encoder_path, map_location=device)
 
@@ -232,10 +232,10 @@ def test_simple_ethan(image_path,model_name):
             name_dest_im = os.path.join(output_directory, "{}_disp.jpg".format(output_name))
             plt.imsave(name_dest_im, disp_resized_np, cmap='magma', vmax=vmax)
 
-            print("   Processed {:d} of {:d} images - saved prediction to {}".format(
-                idx + 1, len(paths), name_dest_im))
+            #print("   Processed {:d} of {:d} images - saved prediction to {}".format(
+            #    idx + 1, len(paths), name_dest_im))
 
-    print('-> Done!')
+    #print('-> Done!')
 
 if __name__ == '__main__':
     #args = parse_args()

@@ -1,6 +1,7 @@
 import cv2
 import os
 import sys
+import math
 def convertVideoToPictures(video_name):
     if not os.path.exists('assets//videos'):
         os.mkdir('assets//videos')
@@ -15,6 +16,26 @@ def convertVideoToPictures(video_name):
       print('Read a new frame: ', success)
       count += 1
     return(count)
+
+def getPicturesFromVideo(video_name):
+    if not os.path.exists('assets//videos'):
+        os.mkdir('assets//videos')
+
+    cap = cv2.VideoCapture('assets//videos//' + video_name)
+    frameRate = cap.get(5) #frame rate
+    x=1
+    while(cap.isOpened()):
+        frameId = cap.get(1) #current frame number
+        ret, frame = cap.read()
+        if (ret != True):
+            break
+        if (frameId % math.floor(frameRate) == 0):
+            filename = 'assets//videos//' +  str(int(x)) + ".jpg"
+            x+=1
+            cv2.imwrite(filename, frame)
+
+    cap.release()
+
 
 def removeFrames():
     count = findCount()

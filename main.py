@@ -7,18 +7,19 @@ import test_simple
 import cv2
 import video_converter
 import math
+from datetime import datetime
 
 from imageai.Detection import ObjectDetection
 import os
 
 def drawBounds(x1,y1,x2,y2,picture):
-    for i in range(x1,x2):
+    for i in range(x1,x2 - 1):
         picture[0][0][y1][i] = 0
-        picture[0][0][y2][i] = 0
+        picture[0][0][y2-1][i] = 0
 
-    for i in range(y1,y2):
+    for i in range(y1,y2-1):
         picture[0][0][i][x1] = 0
-        picture[0][0][i][x2] = 0
+        picture[0][0][i][x2-1] = 0
 
 def drawBoundsColor(x1,y1,x2,y2,picture):
     for i in range(x1,x2):
@@ -31,8 +32,8 @@ def drawBoundsColor(x1,y1,x2,y2,picture):
 def findAverage(x1,y1,x2,y2,picture):
     count = 1
     total = 0
-    for i in range(x1,x2):
-        for j in range(y1,y2):
+    for i in range(x1,x2 - 1):
+        for j in range(y1,y2 - 1):
             count += 1
             total += picture[0][0][j][i]
     return(total / count)
@@ -50,10 +51,13 @@ eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
 execution_path = os.getcwd()
 path = os.getcwd() + '\\assets\\videos\\'
 
-count = 0
+count = 1
 
-while(count < 1):
-    pictureName = ("frame%d" % count)
+
+
+while(count < 10):
+    current = datetime.now()
+    pictureName = ("%d" % count)
 
     image = cv2.imread(path + pictureName + '.jpg')
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -65,10 +69,12 @@ while(count < 1):
     detector.setModelPath( os.path.join(execution_path + '\\models' , "resnet50_coco_best_v2.0.1.h5"))
     detector.loadModel()
 
-    test_simple.test_simple_ethan(path + pictureName + '.jpg','mono_1024x320')
-
+    test_simple.test_simple_ethan(path + pictureName + '.jpg','mono_640x192')
+    print('Finished Monodepth2 ' + str(datetime.now() - current))
+    current = datetime.now()
     detections = detector.detectObjectsFromImage(input_image=os.path.join(path +  pictureName + ".jpg"), output_image_path=os.path.join(execution_path + '\\assets\\proccessed', pictureName + "new.jpg"))
-
+    print('Object detecting ' + str(datetime.now() - current))
+    current = datetime.now()
     nPic = numpy.load(path + pictureName + '_disp.npy')
     nPicFlat = numpy.ones((nPic.size,1))
 
